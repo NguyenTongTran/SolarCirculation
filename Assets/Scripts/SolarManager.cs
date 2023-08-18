@@ -76,9 +76,11 @@ public class SolarManager : MonoBehaviour
     {
         float sinAltitude = Mathf.Sin(latitude) * Mathf.Sin(solarDeclination) + Mathf.Cos(latitude) * Mathf.Cos(solarDeclination) * Mathf.Cos(hourAngle);
         float altitude = Mathf.Asin(sinAltitude);
-        
-        float cosAzimuth = Mathf.Clamp((Mathf.Sin(latitude) * sinAltitude - Mathf.Sin(solarDeclination)) / Mathf.Cos(latitude) * Mathf.Cos(altitude), -1f, 1f);
-        float azimuth = Mathf.Acos(cosAzimuth);
+
+        float sinAzimuth = -Mathf.Cos(solarDeclination) * Mathf.Sin(hourAngle);
+        float cosAzimuth = Mathf.Clamp((Mathf.Sin(latitude) * sinAltitude - Mathf.Sin(solarDeclination)) /
+                                       (Mathf.Cos(latitude) * Mathf.Cos(altitude)), -1f, 1f);
+        float azimuth = Mathf.Atan2(sinAzimuth, cosAzimuth);
 
         return new SolarPosition { Altitude = altitude, Azimuth = azimuth };
     }
