@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public struct SolarAngle
+public struct SolarPosition
 {
     public float Altitude;
     public float Azimuth;
@@ -46,10 +46,10 @@ public class SolarManager : MonoBehaviour
 
         // Calculate the solar angles
         float latRad = Mathf.Deg2Rad * _latitude;
-        SolarAngle solarAngle = CalculateSolarAnglesInRad(latRad, solarDeclination, hourAngle);
+        SolarPosition solarPosition = CalculateSolarAnglesInRad(latRad, solarDeclination, hourAngle);
         
         // Apply rotation to the solar
-        Vector3 sunRotation = new Vector3(solarAngle.Altitude * Mathf.Rad2Deg, solarAngle.Azimuth * Mathf.Rad2Deg, 0.0f);
+        Vector3 sunRotation = new Vector3(solarPosition.Altitude * Mathf.Rad2Deg, solarPosition.Azimuth * Mathf.Rad2Deg, 0.0f);
         _solar.rotation = Quaternion.Euler(sunRotation);
     }
     
@@ -72,7 +72,7 @@ public class SolarManager : MonoBehaviour
         return Mathf.Deg2Rad * hourAngle;
     }
 
-    private SolarAngle CalculateSolarAnglesInRad(float latitude, float solarDeclination, float hourAngle)
+    private SolarPosition CalculateSolarAnglesInRad(float latitude, float solarDeclination, float hourAngle)
     {
         float sinAltitude = Mathf.Sin(latitude) * Mathf.Sin(solarDeclination) + Mathf.Cos(latitude) * Mathf.Cos(solarDeclination) * Mathf.Cos(hourAngle);
         float altitude = Mathf.Asin(sinAltitude);
@@ -80,6 +80,6 @@ public class SolarManager : MonoBehaviour
         float cosAzimuth = Mathf.Clamp((Mathf.Sin(latitude) * sinAltitude - Mathf.Sin(solarDeclination)) / Mathf.Cos(latitude) * Mathf.Cos(altitude), -1f, 1f);
         float azimuth = Mathf.Acos(cosAzimuth);
 
-        return new SolarAngle { Altitude = altitude, Azimuth = azimuth };
+        return new SolarPosition { Altitude = altitude, Azimuth = azimuth };
     }
 }
